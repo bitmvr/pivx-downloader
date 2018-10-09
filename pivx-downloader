@@ -37,7 +37,7 @@ pivxdl::urlSuffix(){
 	--arm32)
 		echo 'arm-linux-gnueabihf.tar.gz'
 		;;
-	--macOS-HighSierra)
+	--macos-hso)
 		echo 'high-sierra-only.dmg'
 		;;
 	--linux32)
@@ -46,10 +46,10 @@ pivxdl::urlSuffix(){
 	--linux64)
 		echo 'x86_64-linux-gnu.tar.gz'
 		;;
-	--macOS-tarball)
+	--macos-tgz)
 		echo 'osx64.tar.gz'
 		;;
-	--macOS-dmg)
+	--macos-dmg)
 		echo 'osx-unsigned.dmg'
 		;;
 	--win32-exe)
@@ -92,9 +92,9 @@ pivxdl::usage(){
 	echo "  --arm32     | Arm 32-bit"
 	echo "  --linux32   | Linux 32-bit"
 	echo "  --linux64   | Linux 64-bit"
-	echo "  --MacOS-dmg | MacOS DMG"
-	echo "  --macOS-tgz | MacOS Tarball"
-	echo "  --macOS-HSO | MacOS High Sierra Only DMG"
+	echo "  --macos-dmg | MacOS DMG"
+	echo "  --macos-tgz | MacOS Tarball"
+	echo "  --macos-hso | MacOS High Sierra Only DMG"
 	echo "  --win32-exe | Win32 Installer (Unsigned)"
 	echo "  --win32-zip | Win32 Zip"
 	echo "  --win64-exe | Win64 Installer (Unsigned)"
@@ -113,7 +113,7 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-if ! pivxdl::urlSuffix "$flag" > /dev/null; then
+if ! { pivxdl::urlSuffix "$flag" > /dev/null 2>&1 || [ "$flag" == '--help' ]; }; then
 	echo ""
 	echo "ERROR: Unknown flag was passed. Pass --help to see available flags"
 	echo ""

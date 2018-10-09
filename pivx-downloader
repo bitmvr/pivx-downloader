@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-set -e 
-
 pivxdl::getLatestVersionURL(){
 	local url='https://github.com/PIVX-Project/PIVX/releases/latest'
-	curl -Ls -o /dev/null -w %{url_effective} "$url"
+	curl -Ls -o /dev/null -w "%{url_effective}" "$url"
 }
 
 pivxdl::getLatestVersion(){
@@ -67,21 +65,26 @@ pivxdl::urlSuffix(){
 		echo 'win64.zip'
 		;;
 	*)
-		echo 'Unknown flag was passed'
-		exit 1
+		return 1
 		;;
 	esac		
 }
 
 pivxdl::urlBuilder(){
+	local desired_os
+	local url_root
 	desired_os="$1"
-	echo "https://github.com/PIVX-Project/PIVX/releases/download/$(pivxdl::getLatestVersion)/$(pivxdl::urlPrefix)$(pivxdl::urlSuffix $desired_os)"
+	url_root='https://github.com/PIVX-Project/PIVX/releases/download'
+	echo "${url_root}/$(pivxdl::getLatestVersion)/$(pivxdl::urlPrefix)$(pivxdl::urlSuffix "$desired_os")"
 }
 
 
 pivxdl::usage(){
+	local script_name
+	script_name="$(basename "$0")"
+	echo "${script_name} (0.0.1) - A small CLI utility to grab the latest version of the PIVX wallet"
 	echo ""
-	echo "$(basename "$0") - A small CLI utility to grab the latest version of the PIVX wallet"
+	echo "Usage: ${script_name} [--os-flag]"
 	echo ""
 	echo "Operating System Flags:"
 	echo ""
@@ -105,12 +108,24 @@ pivxdl::usage(){
 
 flag="$1"
 
+if [ $# -eq 0 ]; then
+	pivxdl::usage
+	exit 1
+fi
+
+if ! pivxdl::urlSuffix "$flag" > /dev/null; then
+	echo ""
+	echo "ERROR: Unknown flag was passed. Pass --help to see available flags"
+	echo ""
+	exit 1
+fi
+
 case "$flag" in
 	--help)
 		pivxdl::usage
 		;;
 	*)
-		pivxdl::urlBuilder $flag
+		pivxdl::urlBuilder "$flag"
 		;;
 esac
 

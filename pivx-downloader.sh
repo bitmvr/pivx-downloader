@@ -1,18 +1,6 @@
 #!/usr/bin/env bash
 
-
-# pivx-3.1.1-aarch64-linux-gnu.tar.gz
-# pivx-3.1.1-arm-linux-gnueabihf.tar.gz
-# pivx-3.1.1-high-sierra-only.dmg
-# pivx-3.1.1-i686-pc-linux-gnu.tar.gz
-# pivx-3.1.1-osx64.tar.gz
-# pivx-3.1.1-osx-unsigned.dmg
-# pivx-3.1.1.tar.gz
-# pivx-3.1.1-win32-setup-unsigned.exe
-# pivx-3.1.1-win32.zip
-# pivx-3.1.1-win64-setup-unsigned.exe
-# pivx-3.1.1-win64.zip
-# pivx-3.1.1-x86_64-linux-gnu.tar.gz
+set -e 
 
 pivxdl::getLatestVersionURL(){
 	local url='https://github.com/PIVX-Project/PIVX/releases/latest'
@@ -80,6 +68,7 @@ pivxdl::urlSuffix(){
 		;;
 	*)
 		echo 'Unknown flag was passed'
+		exit 1
 		;;
 	esac		
 }
@@ -90,8 +79,32 @@ pivxdl::urlBuilder(){
 }
 
 
+pivxdl::usage(){
+	echo ""
+	echo "pivx-downloader - A small CLI utility to grab the latest version of the PIVX wallet"
+	echo ""
+	echo -e "\\t--arch64 | Arch 64-bit"
+	echo -e "\\t--arm32 | Arm 32-bit"
+	echo -e "\\t--macOS-HighSierra | MacOS High Sierra Only DMG"
+	echo -e "\\t--linux32 | Linux 32-bit"
+	echo -e "\\t--linux64 | Linux 64-bit"
+	echo -e "\\t--macOS-tarball | MacOS Tarball"
+	echo -e "\\t--MacOS-dmg | MacOS DMG"
+	echo -e "\\t--win32-exe | Win32 Installer (Unsigned)"
+	echo -e "\\t--win32-zip | Win32 Zip"
+	echo -e "\\t--win64-exe | Win64 Installer (Unsigned)"
+	echo -e "\\t--win64-zip | Win64 Zip"
+	echo ""
+}
+
 flag="$1"
-pivxdl::urlBuilder "$flag"
 
-
+case "$flag" in
+	--help)
+		pivxdl::usage
+		;;
+	*)
+		pivxdl::urlBuilder $flag
+		;;
+esac
 

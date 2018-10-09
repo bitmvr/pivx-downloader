@@ -49,7 +49,7 @@ pivxdl::urlSuffix(){
 	--macOS-tarball)
 		echo 'osx64.tar.gz'
 		;;
-	--MacOS-dmg)
+	--macOS-dmg)
 		echo 'osx-unsigned.dmg'
 		;;
 	--win32-exe)
